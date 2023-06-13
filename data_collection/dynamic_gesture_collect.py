@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from BlazeposeRenderer import BlazeposeRenderer
 import argparse
 import pickle

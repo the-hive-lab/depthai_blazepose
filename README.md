@@ -3,6 +3,8 @@
 This repo is a **fork** of the core Blazepose repo for the OAK-D cameras. 
 It is refactored to adhere to typicaly python packaging schemes and will have additional capabilities for use in the [HIVE Lab](http://thehivelab.xyz).
 
+-----
+
 Running Google Mediapipe single body pose tracking models on [DepthAI](https://docs.luxonis.com/en/gen2/) hardware (OAK-1, OAK-D, ...). 
 
 The Blazepose landmark models available in this repository are the version "full", "lite" and "heavy" of mediapipe 0.8.6 (2021/07),

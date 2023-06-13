@@ -34,8 +34,7 @@ parser_tracker.add_argument('--force_detection', action="store_true",
 parser_renderer = parser.add_argument_group("Renderer arguments")
 parser_renderer.add_argument('-3', '--show_3d', choices=[None, "image", "world", "mixed"], default=None,
                     help="Display skeleton in 3d in a separate window. See README for description.")
-parser_renderer.add_argument("-o","--output",
-                    help="Path to output video file")
+parser_renderer.add_argument("-o","--output", type=str, default="data", help="Path to output video file")
  
 
 args = parser.parse_args()
@@ -66,6 +65,7 @@ pose_cam_list = []
 visibility_list = []
 presence_list = []
 xyzs = []
+# bodies = []
 
 while True:
     # Run blazepose on next frame
@@ -77,6 +77,7 @@ while True:
         pose_list.append(body.landmarks_world)
         visibility_list.append(body.visibility)
         presence_list.append(body.presence)
+        # bodies.append(body)
         xyzs.append(body.xyz)
 
         # Draw 2d skeleton
@@ -90,10 +91,11 @@ output_dict = {
     'landmarks_world' : pose_list,
     'visibility' : visibility_list,
     'presence' : presence_list,
-    'xyzs' : xyzs
+    # 'xyzs' : xyzs
 }
 
 with open(args.output + ".pickle", "wb") as file:
+    # pickle.dump(bodies, file, protocol=pickle.HIGHEST_PROTOCOL)
     pickle.dump(output_dict, file, protocol=pickle.HIGHEST_PROTOCOL)
 
 renderer.exit()

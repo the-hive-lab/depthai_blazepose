@@ -1,5 +1,8 @@
 # Blazepose tracking with DepthAI
 
+This repo is a **fork** of the core Blazepose repo for the OAK-D cameras. 
+It is refactored to adhere to typicaly python packaging schemes and will have additional capabilities for use in the [HIVE Lab](http://thehivelab.xyz).
+
 Running Google Mediapipe single body pose tracking models on [DepthAI](https://docs.luxonis.com/en/gen2/) hardware (OAK-1, OAK-D, ...). 
 
 The Blazepose landmark models available in this repository are the version "full", "lite" and "heavy" of mediapipe 0.8.6 (2021/07),
@@ -60,6 +63,7 @@ The image below demonstrates the 3 modes of 3D visualization:
 
 ## Install
 
+TODO: Revise using `setup.py` when ready...
 
 Install the python packages (depthai, opencv, open3d) with the following command:
 
@@ -246,43 +250,6 @@ from BlazeposeDepthaiEdge import BlazeposeDepthai
 - **BlazeposeRenderer**, which is responsible of rendering the landmarks and the skeleton on the video frame. 
 
 This way, you can replace the renderer from this repository and write and personalize your own renderer (for some projects, you may not even need a renderer).
-
-The file ```demo.py``` is a representative example of how to use these classes:
-```
-from BlazeposeDepthaiEdge import BlazeposeDepthai
-from BlazeposeRenderer import BlazeposeRenderer
-
-# The argparse stuff has been removed to keep only the important code
-
-tracker = BlazeposeDepthai(input_src=args.input, 
-            pd_model=args.pd_m,
-            lm_model=args.lm_m,
-            smoothing=not args.no_smoothing,   
-            xyz=args.xyz,           
-            crop=args.crop,
-            internal_fps=args.internal_fps,
-            internal_frame_height=args.internal_frame_height,
-            force_detection=args.force_detection,
-            stats=args.stats,
-            trace=args.trace)   
-
-renderer = BlazeposeRenderer(
-                pose, 
-                show_3d=args.show_3d, 
-                output=args.output)
-
-while True:
-    # Run blazepose on next frame
-    frame, body = tracker.next_frame()
-    if frame is None: break
-    # Draw 2d skeleton
-    frame = renderer.draw(frame, body)
-    key = renderer.waitKey(delay=1)
-    if key == 27 or key == ord('q'):
-        break
-renderer.exit()
-tracker.exit()
-```
 
 For more information on:
 - the arguments of the tracker, please refer to the docstring of class `BlazeposeDepthai` or `BlazeposeDepthaiEdge` in `BlazeposeDepthai.py` or `BlazeposeDepthaiEdge.py`;

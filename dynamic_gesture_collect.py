@@ -3,6 +3,8 @@
 from BlazeposeRenderer import BlazeposeRenderer
 import argparse
 import pickle
+import pandas as pd
+import numpy as np
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-e', '--edge', action="store_true",
@@ -14,7 +16,7 @@ parser_tracker.add_argument("--pd_m", type=str,
                     help="Path to an .blob file for pose detection model")
 parser_tracker.add_argument("--lm_m", type=str,
                     help="Landmark model ('full' or 'lite' or 'heavy') or path to an .blob file")
-parser_tracker.add_argument('-xyz', '--xyz', action="store_true", 
+parser_tracker.add_argument('-xyz', '--xyz', action="store_true", default=True, 
                     help="Get (x,y,z) coords of reference body keypoint in camera coord system (only for compatible devices)")
 parser_tracker.add_argument('-c', '--crop', action="store_true", 
                     help="Center crop frames to a square shape before feeding pose detection model")
@@ -60,12 +62,12 @@ renderer = BlazeposeRenderer(
                 show_3d=args.show_3d, 
                 output=args.output + ".mp4")
 
-pose_list = []
-pose_cam_list = []
+landmarks_world_list = []
+landmarks_list = []
 visibility_list = []
 presence_list = []
 xyzs = []
-# bodies = []
+
 
 while True:
     # Run blazepose on next frame
@@ -73,12 +75,12 @@ while True:
     if frame is not None and body is not None:
         
         # Grab the relevant data from the Body data structure
-        pose_cam_list.append(body.landmarks)
-        pose_list.append(body.landmarks_world)
-        visibility_list.append(body.visibility)
-        presence_list.append(body.presence)
-        # bodies.append(body)
-        xyzs.append(body.xyz)
+        landmarks_list.append(body.landmarks)
+        lms_world = body.landmarks_world.flatten()
+        landmarks_world_list.append(lms_world)
+        # visibility_list.append(body.visibility)
+        # presence_list.append(body.presence)
+        # xyzs.append(body.xyz)
 
         # Draw 2d skeleton
         frame = renderer.draw(frame, body)
@@ -86,11 +88,16 @@ while True:
         if key == 27 or key == ord('q'):
             break
 
+# Make the csv file for this recording
+col_labels = [str(i) for i in range(np.array(landmarks_world_list).shape[1])]
+dynamic_gesture_df = pd.DataFrame(landmarks_world_list, columns=col_labels)
+dynamic_gesture_df.to_csv(f"{args.output}.csv")
+
 output_dict = {
-    'landmarks' : pose_cam_list,
-    'landmarks_world' : pose_list,
-    'visibility' : visibility_list,
-    'presence' : presence_list,
+    'landmarks' : landmarks_list,
+    'landmarks_world' : landmarks_world_list,
+    # 'visibility' : visibility_list,
+    # 'presence' : presence_list,
     # 'xyzs' : xyzs
 }
 

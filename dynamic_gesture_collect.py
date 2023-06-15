@@ -1,10 +1,11 @@
-#!/usr/bin/env python3
-
 from BlazeposeRenderer import BlazeposeRenderer
 import argparse
 import pickle
 import pandas as pd
 import numpy as np
+import time
+import datetime
+from pathlib import Path
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-e', '--edge', action="store_true",
@@ -36,7 +37,9 @@ parser_tracker.add_argument('--force_detection', action="store_true",
 parser_renderer = parser.add_argument_group("Renderer arguments")
 parser_renderer.add_argument('-3', '--show_3d', choices=[None, "image", "world", "mixed"], default=None,
                     help="Display skeleton in 3d in a separate window. See README for description.")
-parser_renderer.add_argument("-o","--output", type=str, default="data", help="Path to output video file")
+
+
+parser_renderer.add_argument("-o","--output", type=str, default="data", help="Name of the output data files")
  
 
 args = parser.parse_args()
@@ -57,17 +60,28 @@ tracker = BlazeposeDepthai(input_src=args.input,
             stats=True,
             trace=args.trace)   
 
-renderer = BlazeposeRenderer(
-                tracker, 
-                show_3d=args.show_3d, 
-                output=args.output + ".mp4")
-
 landmarks_world_list = []
-landmarks_list = []
 visibility_list = []
 presence_list = []
 xyzs = []
 
+now = datetime.datetime.now()
+month = str(now.month).zfill(2)
+day = str(now.day).zfill(2)
+hour = str(now.hour).zfill(2)
+minute = str(now.minute).zfill(2)
+secs = str(now.second).zfill(2)
+timestamp = f"{now.year}{month}{day}_{hour}{minute}{secs}"
+data_dir = Path(__file__).cwd().resolve().joinpath(args.output + "_" + timestamp)
+print(f"Data directory: {data_dir}")
+data_dir.mkdir()
+
+renderer = BlazeposeRenderer(
+                tracker, 
+                show_3d=args.show_3d, 
+                output=str(data_dir.joinpath(args.output+".mp4")))
+
+time.sleep(2)
 
 while True:
     # Run blazepose on next frame
@@ -75,12 +89,11 @@ while True:
     if frame is not None and body is not None:
         
         # Grab the relevant data from the Body data structure
-        landmarks_list.append(body.landmarks)
         lms_world = body.landmarks_world.flatten()
         landmarks_world_list.append(lms_world)
-        # visibility_list.append(body.visibility)
-        # presence_list.append(body.presence)
-        # xyzs.append(body.xyz)
+        visibility_list.append(body.visibility)
+        presence_list.append(body.presence)
+        xyzs.append(body.xyz)
 
         # Draw 2d skeleton
         frame = renderer.draw(frame, body)
@@ -89,21 +102,36 @@ while True:
             break
 
 # Make the csv file for this recording
-col_labels = [str(i) for i in range(np.array(landmarks_world_list).shape[1])]
-dynamic_gesture_df = pd.DataFrame(landmarks_world_list, columns=col_labels)
-dynamic_gesture_df.to_csv(f"{args.output}.csv")
+landmark_col_labels = [str(i) for i in range(np.array(landmarks_world_list).shape[1])]
+dynamic_gesture_df = pd.DataFrame(landmarks_world_list, columns=landmark_col_labels)
+gesture_out_path = data_dir.joinpath(args.output+"_landmarks.csv")
+dynamic_gesture_df.to_csv(gesture_out_path)
 
-output_dict = {
-    'landmarks' : landmarks_list,
-    'landmarks_world' : landmarks_world_list,
-    # 'visibility' : visibility_list,
-    # 'presence' : presence_list,
-    # 'xyzs' : xyzs
-}
+# Probability of keypoints that exist and are *not* occluded
+gesture_vis_col_labels = [str(i) for i in range(np.array(visibility_list).shape[1])]
+gesture_visibility_df = pd.DataFrame(visibility_list, columns=gesture_vis_col_labels)
+vis_out_path = data_dir.joinpath(args.output+"_visibility.csv")
+gesture_visibility_df.to_csv(vis_out_path)
 
-with open(args.output + ".pickle", "wb") as file:
-    # pickle.dump(bodies, file, protocol=pickle.HIGHEST_PROTOCOL)
-    pickle.dump(output_dict, file, protocol=pickle.HIGHEST_PROTOCOL)
+# Probability of keypoints that exist in the frame
+gesture_pres_col_labels = [str(i) for i in range(np.array(presence_list).shape[1])]
+gesture_presence_df = pd.DataFrame(presence_list, columns=gesture_pres_col_labels)
+presence_out_path = data_dir.joinpath(args.output + "_presence.csv")
+gesture_presence_df.to_csv(presence_out_path)
+
+# Store the human's center xyz estimate
+xyz_labels = ['x','y','z']
+xyz_df = pd.DataFrame(xyzs, columns=xyz_labels)
+xyz_out_path = data_dir.joinpath(args.output + "_xyz.csv")
+xyz_df.to_csv(xyz_out_path)
+
+
+# output_dict = {
+#     'visibility' : visibility_list,
+#     'presence' : presence_list,
+# }
+# with open(args.output + ".pickle", "wb") as file:
+#     pickle.dump(output_dict, file, protocol=pickle.HIGHEST_PROTOCOL)
 
 renderer.exit()
 tracker.exit()

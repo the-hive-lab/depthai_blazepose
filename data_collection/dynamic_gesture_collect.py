@@ -135,3 +135,8 @@ xyz_df.to_csv(xyz_out_path)
 
 renderer.exit()
 tracker.exit()
+
+# NOTE: See issue described in setup.py - exceptions occurring due to Venv
+# troubles with installed python packages
+def main():
+    pass

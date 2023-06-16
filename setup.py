@@ -12,7 +12,12 @@ setup(
         'depthai >= 2.10',
         'pandas',
     ],
+    # NOTE: when the following is activated I get exceptions related to mismatched versions of packages
+    # in the Venv! Need to sort this out...
+
     # entry_points={
-    #     'console_scripts': []
+    #     'console_scripts': [
+    #         'dynamic_gesture_collect=data_collection.dynamic_gesture_collect:main'
+    #     ]
     # }
 )

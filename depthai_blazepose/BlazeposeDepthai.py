@@ -7,7 +7,8 @@ from math import sin, cos
 import depthai as dai
 import time, sys
 
-SCRIPT_DIR = Path(__file__).resolve().parent
+# SCRIPT_DIR = Path(__file__).resolve().parent
+SCRIPT_DIR = Path.cwd()
 POSE_DETECTION_MODEL = str(SCRIPT_DIR / "models/pose_detection_sh4.blob")
 LANDMARK_MODEL_FULL = str(SCRIPT_DIR / "models/pose_landmark_full_sh4.blob")
 LANDMARK_MODEL_HEAVY = str(SCRIPT_DIR / "models/pose_landmark_heavy_sh4.blob")
@@ -67,7 +68,7 @@ class BlazeposeDepthai:
                 trace=False,
                 force_detection=False
                 ):
-        
+
         self.pd_model = pd_model if pd_model else POSE_DETECTION_MODEL
         print(f"Pose detection blob file : {self.pd_model}")
         self.rect_transf_scale = 1.25

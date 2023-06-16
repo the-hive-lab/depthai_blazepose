@@ -1,14 +1,15 @@
 import numpy as np
 import cv2
-from numpy.core.fromnumeric import trace
-import mediapipe_utils as mpu
 from pathlib import Path
-from FPS import FPS, now
 import depthai as dai
 import marshal
 import sys
 from string import Template
 from math import sin, cos
+
+from numpy.core.fromnumeric import trace
+import depthai_blazepose.utils.mediapipe_utils as mpu
+from depthai_blazepose.utils.FPS import FPS, now
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 POSE_DETECTION_MODEL = str(SCRIPT_DIR / "models/pose_detection_sh4.blob")

@@ -1,9 +1,7 @@
 import cv2
 import numpy as np
-from o3d_utils import Visu3D
-import mediapipe_utils as mpu
-
-
+from depthai_blazepose.utils.o3d_utils import Visu3D
+import depthai_blazepose.utils.mediapipe_utils as mpu
 
 # LINE_BODY and COLORS_BODY are used when drawing the skeleton in 3D. 
 rgb = {"right":(0,1,0), "left":(1,0,0), "middle":(1,1,0)}
@@ -20,9 +18,6 @@ COLORS_BODY = ["middle","right","left",
                 "left","left","left","left","left",
                 "right","right","right","left","left","left"]
 COLORS_BODY = [rgb[x] for x in COLORS_BODY]
-
-
-
 
 class BlazeposeRenderer:
     def __init__(self,

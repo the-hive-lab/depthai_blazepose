@@ -11,14 +11,14 @@ from numpy.core.fromnumeric import trace
 import depthai_blazepose.utils.mediapipe_utils as mpu
 from depthai_blazepose.utils.FPS import FPS, now
 
-SCRIPT_DIR = Path(__file__).resolve().parent
+SCRIPT_DIR = Path.cwd()
 POSE_DETECTION_MODEL = str(SCRIPT_DIR / "models/pose_detection_sh4.blob")
 LANDMARK_MODEL_FULL = str(SCRIPT_DIR / "models/pose_landmark_full_sh4.blob")
 LANDMARK_MODEL_HEAVY = str(SCRIPT_DIR / "models/pose_landmark_heavy_sh4.blob")
 LANDMARK_MODEL_LITE = str(SCRIPT_DIR / "models/pose_landmark_lite_sh4.blob")
 DETECTION_POSTPROCESSING_MODEL = str(SCRIPT_DIR / "custom_models/DetectionBestCandidate_sh1.blob")
 DIVIDE_BY_255_MODEL = str(SCRIPT_DIR / "custom_models/DivideBy255_sh1.blob")
-TEMPLATE_MANAGER_SCRIPT = str(SCRIPT_DIR / "template_manager_script.py")
+TEMPLATE_MANAGER_SCRIPT = str(SCRIPT_DIR / "scripts/template_manager_script.py")
 
 
 def to_planar(arr: np.ndarray, shape: tuple) -> np.ndarray:

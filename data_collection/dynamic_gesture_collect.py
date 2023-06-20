@@ -1,4 +1,4 @@
-from BlazeposeRenderer import BlazeposeRenderer
+from depthai_blazepose.BlazeposeRenderer import BlazeposeRenderer
 import argparse
 import pickle
 import pandas as pd
@@ -45,9 +45,9 @@ parser_renderer.add_argument("-o","--output", type=str, default="data", help="Na
 args = parser.parse_args()
 
 if args.edge:
-    from BlazeposeDepthaiEdge import BlazeposeDepthai
+    from depthai_blazepose.BlazeposeDepthaiEdge import BlazeposeDepthai
 else:
-    from BlazeposeDepthai import BlazeposeDepthai
+    from depthai_blazepose.BlazeposeDepthai import BlazeposeDepthai
 tracker = BlazeposeDepthai(input_src=args.input, 
             pd_model=args.pd_m,
             lm_model=args.lm_m,
@@ -135,3 +135,8 @@ xyz_df.to_csv(xyz_out_path)
 
 renderer.exit()
 tracker.exit()
+
+# NOTE: See issue described in setup.py - exceptions occurring due to Venv
+# troubles with installed python packages
+def main():
+    pass

@@ -3,6 +3,15 @@
 This repo is a **fork** of the core Blazepose repo for the OAK-D cameras. 
 It is refactored to adhere to typicaly python packaging schemes and will have additional capabilities for use in the [HIVE Lab](http://thehivelab.xyz).
 
+The refactoring has the following structure:
+
+- `depthai_blazepose` - Python module forthe DepthAI based Blazepose model
+- `depthai_blazepose.utils` - Utility modules used within the project
+- `examples` - Reorganized examples from the original repository
+- `data_collection` - This module maintains HIVE Lab data collection modules
+
+-----
+
 Running Google Mediapipe single body pose tracking models on [DepthAI](https://docs.luxonis.com/en/gen2/) hardware (OAK-1, OAK-D, ...). 
 
 The Blazepose landmark models available in this repository are the version "full", "lite" and "heavy" of mediapipe 0.8.6 (2021/07),
@@ -14,7 +23,6 @@ The pose detection model comes from mediapipe 0.8.4 and is compatible with the 3
 For the challenger Movenet on DepthAI, please visit : [depthai_movenet](https://github.com/geaxgx/depthai_movenet)
 
 For an OpenVINO version of Blazepose, please visit : [openvino_blazepose](https://github.com/geaxgx/openvino_blazepose)
-
 
 - [Blazepose tracking with DepthAI](#blazepose-tracking-with-depthai)
   - [Architecture: Host mode vs Edge mode](#architecture-host-mode-vs-edge-mode)
@@ -63,20 +71,19 @@ The image below demonstrates the 3 modes of 3D visualization:
 
 ## Install
 
-TODO: Revise using `setup.py` when ready...
-
-Install the python packages (depthai, opencv, open3d) with the following command:
+To install this module, it is recommended that you create a [virutual environment](https://docs.python.org/3/library/venv.html) first. 
+Then run the following:
 
 ```
-python3 -m pip install -r requirements.txt
+pip install -e .
 ```
 
 ## Run
 
-**Usage:**
+**Demo Usage:**
 
 ```
--> python3 demo.py -h
+-> python3 examples/demo.py -h
 usage: demo.py [-h] [-e] [-i INPUT] [--pd_m PD_M] [--lm_m LM_M] [-xyz] [-c]
                [--no_smoothing] [-f INTERNAL_FPS]
                [--internal_frame_height INTERNAL_FRAME_HEIGHT] [-s] [-t]

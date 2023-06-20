@@ -11,7 +11,7 @@ For each arm (segment shoulder-elbow), its angle with the vertical axe is calcul
 
 ```
 -> python3 demo.py -h
-usage: demo.py [-h] [-m {full,lite,831}] [-i INPUT] [-o OUTPUT]
+usage: demo_semaphore.py [-h] [-m {full,lite,831}] [-i INPUT] [-o OUTPUT]
 
 optional arguments:
   -h, --help            show this help message and exit

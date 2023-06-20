@@ -1,18 +1,19 @@
 import numpy as np
-import mediapipe_utils as mpu
 import cv2
 from pathlib import Path
-from FPS import FPS, now
 from math import sin, cos
 import depthai as dai
 import time, sys
 
-SCRIPT_DIR = Path(__file__).resolve().parent
+import depthai_blazepose.utils.mediapipe_utils as mpu
+from depthai_blazepose.utils.FPS import FPS, now
+
+# SCRIPT_DIR = Path(__file__).resolve().parent
+SCRIPT_DIR = Path.cwd()
 POSE_DETECTION_MODEL = str(SCRIPT_DIR / "models/pose_detection_sh4.blob")
 LANDMARK_MODEL_FULL = str(SCRIPT_DIR / "models/pose_landmark_full_sh4.blob")
 LANDMARK_MODEL_HEAVY = str(SCRIPT_DIR / "models/pose_landmark_heavy_sh4.blob")
 LANDMARK_MODEL_LITE = str(SCRIPT_DIR / "models/pose_landmark_lite_sh4.blob")
-
 
 def to_planar(arr: np.ndarray, shape: tuple) -> np.ndarray:
     return cv2.resize(arr, shape).transpose(2,0,1).flatten()
@@ -67,7 +68,7 @@ class BlazeposeDepthai:
                 trace=False,
                 force_detection=False
                 ):
-        
+
         self.pd_model = pd_model if pd_model else POSE_DETECTION_MODEL
         print(f"Pose detection blob file : {self.pd_model}")
         self.rect_transf_scale = 1.25
